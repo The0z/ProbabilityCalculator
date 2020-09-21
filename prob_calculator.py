@@ -13,20 +13,39 @@ class Hat:
             numBalls.append(balls.get(i))
             sum += int(balls.get(i))
         # Creating content instance list
-        self.content = list()
+        self.contents = list()
         for i in range(len(ballColors)):
             for j in range(numBalls[i]):
-                self.content.append(ballColors[i])
+                self.contents.append(ballColors[i])
 
     def draw(self, drawNum):
         pickedBalls = list()
-        if drawNum > len(self.content):
-            drawNum = len(self.content)   # confg to show order of balls
+        if drawNum > len(self.contents):
+            drawNum = len(self.contents)   # confg to show order of balls
         for i in range(drawNum):
-            index = random.randint(0, len(self.content)-1)
-            pickedBalls.append(self.content.pop(index))
+            index = random.randint(0, len(self.contents)-1)
+            pickedBalls.append(self.contents.pop(index))
         return pickedBalls
 
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
-    return 0
+    occur = 0
+
+    for count in range(num_experiments):
+        hatCopy = copy.deepcopy(hat)
+        balls = dict()
+
+        # Consolidating List into Dictionary
+        for ball in hatCopy.draw(num_balls_drawn):
+            balls[ball] = balls.get(ball, 0) + 1
+
+        for i in expected_balls.keys():
+            if balls.get(i, 0) >= expected_balls.get(i):
+                yesMatch = True
+            else:
+                yesMatch = False
+                break
+        if yesMatch:
+            occur += 1
+
+    return occur/num_experiments
